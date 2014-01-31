@@ -1,0 +1,16 @@
+[
+{
+  "modid": "colladamodel",
+  "name": "Lib Collada Model",
+  "description": "A library mod that adds the ability to load models from COLLADA files.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authors": ["Hea3veN"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

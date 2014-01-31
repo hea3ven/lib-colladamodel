@@ -17,13 +17,25 @@ buildscript {
 
 apply plugin: 'forge'
 
+sourceCompatibility = 1.6
+
 version = "1.0"
-group= "net.hea3ven" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "libcolladamodel"
+group = "com.hea3ven" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "lib-colladamodel"
 
 minecraft {
     version = "1.7.2-10.12.0.1005"
 }
+
+sourceSets.main{
+    java{
+        srcDirs 'src' //set the source folder as the /src subfolder
+    }
+    resources{
+        srcDirs 'resources' //set the resources folder as the /resources subfolder
+    }
+}
+
 processResources
 {
     // replace stuff in mcmod.info, nothing else
