@@ -24,7 +24,7 @@ group = "com.hea3ven" // http://maven.apache.org/guides/mini/guide-naming-conven
 archivesBaseName = "lib-colladamodel"
 
 minecraft {
-    version = "1.7.2-10.12.0.1005"
+    version = "1.7.2-10.12.0.1022"
 }
 
 sourceSets.main{

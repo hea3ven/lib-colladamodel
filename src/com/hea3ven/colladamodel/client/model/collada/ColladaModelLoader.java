@@ -65,6 +65,20 @@ public class ColladaModelLoader implements IModelCustomLoader {
 		return LoadFromStream(res.getInputStream());
 	}
 
+	// @Override
+	public IModelAnimationCustom loadAnimationInstance(ResourceLocation resource)
+			throws ModelFormatException {
+		IResource res;
+		try {
+			res = Minecraft.getMinecraft().getResourceManager()
+					.getResource(resource);
+		} catch (IOException e) {
+			throw new ModelFormatException("IO Exception reading model format",
+					e);
+		}
+		return LoadFromStream(res.getInputStream());
+	}
+
 	private Model LoadFromStream(InputStream stream) {
 		try {
 			DocumentBuilder builder = DocumentBuilderFactory.newInstance()

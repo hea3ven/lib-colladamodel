@@ -49,7 +49,7 @@ public class Geometry {
 		GL11.glPopMatrix();
 	}
 
-	public void renderAnimation(Tessellator tessellator, int frame) {
+	public void renderAnimation(Tessellator tessellator, double frame) {
 		GL11.glPushMatrix();
 
 		for (Transform trans : transforms) {
@@ -62,5 +62,16 @@ public class Geometry {
 
 		GL11.glPopMatrix();
 	}
+
+    public double getAnimationLength()
+    {
+        double animationLength = 0;
+        for (Transform trans : transforms)
+        {
+            if(trans.getAnimationLength() > animationLength)
+                animationLength = trans.getAnimationLength();
+        }
+        return animationLength;
+    }
 
 }

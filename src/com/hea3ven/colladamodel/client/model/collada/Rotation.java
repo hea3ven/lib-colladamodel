@@ -42,12 +42,22 @@ public class Rotation extends Transform {
 			animations.add(anim);
 	}
 
-	public void applyAnimation(int frame) {
+	public void applyAnimation(double time) {
 		double angle = this.angle;
 		for (Animation animation : animations) {
-			angle = animation.getValue(frame);
+			angle = animation.getValue(time);
 		}
 		GL11.glRotated(angle, vec.xCoord, vec.yCoord, vec.zCoord);
 	}
+
+    @Override
+    public double getAnimationLength()
+    {
+        double animationLength = 0;
+        for (Animation animation : animations)
+            if(animation.getAnimationLength() > animationLength)
+                animationLength = animation.getAnimationLength();
+       return animationLength;
+    }
 
 }

@@ -24,7 +24,7 @@ public class Matrix extends Transform {
 	}
 
 	@Override
-	public void applyAnimation(int frame) {
+	public void applyAnimation(double frame) {
 		apply();
 	}
 
@@ -33,5 +33,12 @@ public class Matrix extends Transform {
 		// TODO Auto-generated method stub
 
 	}
+
+    @Override
+    public double getAnimationLength()
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
 }

@@ -7,11 +7,11 @@ import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraftforge.client.model.IModelCustom;
 
-public class Model implements IModelCustom {
+public class Model implements IModelAnimationCustom {
 
 	private Map<String, Geometry> geometries;
+	private double animationLength;
 
 	public Model() {
 		geometries = new HashMap<String, Geometry>();
@@ -61,11 +61,51 @@ public class Model implements IModelCustom {
 
 	}
 
-	public void renderAnimationAll(int frame) {
+	@Override
+	public void renderAnimationAll(double time) {
 		Tessellator tessellator = Tessellator.instance;
 		for (Geometry geom : geometries.values()) {
-			geom.renderAnimation(tessellator, frame);
+			geom.renderAnimation(tessellator, time);
 		}
 	}
 
+	@Override
+	public void renderAnimationOnly(double time, String... geometriesNames) {
+		Tessellator tessellator = Tessellator.instance;
+		for (Geometry geom : geometries.values()) {
+			geom.renderAnimation(tessellator, time);
+		}
+	}
+
+	@Override
+	public void renderAnimationPart(double time, String partName) {
+		Tessellator tessellator = Tessellator.instance;
+		for (Geometry geom : geometries.values()) {
+			geom.renderAnimation(tessellator, time);
+		}
+	}
+
+	@Override
+	public void renderAnimationAllExcept(double time,
+			String... excludedGroupNames) {
+		Tessellator tessellator = Tessellator.instance;
+		for (Geometry geom : geometries.values()) {
+			geom.renderAnimation(tessellator, time);
+		}
+	}
+
+	@Override
+	public double getAnimationLength() {
+		if (animationLength == -1)
+			calculateAnimationLength();
+		return animationLength;
+	}
+
+	private void calculateAnimationLength() {
+		animationLength = 0;
+		for (Geometry geom : geometries.values()) {
+			if (geom.getAnimationLength() > animationLength)
+				animationLength = geom.getAnimationLength();
+		}
+	}
 }

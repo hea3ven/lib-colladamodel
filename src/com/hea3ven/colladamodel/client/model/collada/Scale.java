@@ -40,17 +40,32 @@ public class Scale extends Transform {
 		GL11.glScaled(vec.xCoord, vec.yCoord, vec.zCoord);
 	}
 
-	public void applyAnimation(int frame) {
+	public void applyAnimation(double time) {
 		double x = vec.xCoord;
 		double y = vec.yCoord;
 		double z = vec.zCoord;
 		for (Animation animation : animationsX)
-			x = animation.getValue(frame);
+			x = animation.getValue(time);
 		for (Animation animation : animationsY)
-			y = animation.getValue(frame);
+			y = animation.getValue(time);
 		for (Animation animation : animationsZ)
-			z = animation.getValue(frame);
+			z = animation.getValue(time);
 		GL11.glScaled(x, y, z);
 	}
 
+    @Override
+    public double getAnimationLength()
+    {
+        double animationLength = 0;
+        for (Animation animation : animationsX)
+            if(animation.getAnimationLength() > animationLength)
+                animationLength = animation.getAnimationLength();
+        for (Animation animation : animationsY)
+            if(animation.getAnimationLength() > animationLength)
+                animationLength = animation.getAnimationLength();
+        for (Animation animation : animationsZ)
+            if(animation.getAnimationLength() > animationLength)
+                animationLength = animation.getAnimationLength();
+       return animationLength;
+    }
 }
