@@ -38,15 +38,15 @@ public class Model implements IModelAnimationCustom {
 	@Override
 	public void renderOnly(String... geometriesNames) {
 		Tessellator tessellator = Tessellator.instance;
-		// for (String geometryName : geometriesNames) {
-		// geometries.get(geometryName).render(tessellator);
-		// }
+		for (String geometryName : geometriesNames) {
+			geometries.get(geometryName).render(tessellator);
+		}
 	}
 
 	@Override
 	public void renderPart(String partName) {
 		Tessellator tessellator = Tessellator.instance;
-		// geometries.get(partName).render(tessellator);
+		geometries.get(partName).render(tessellator);
 	}
 
 	@Override
@@ -54,10 +54,10 @@ public class Model implements IModelAnimationCustom {
 		Set<String> excludedSet = new HashSet<String>(
 				Arrays.asList(excludedGroupNames));
 		Tessellator tessellator = Tessellator.instance;
-		// for (Geometry geometry : geometries.values()) {
-		// if (!excludedSet.contains(geometry.getId()))
-		// geometry.render(tessellator);
-		// }
+		for (Geometry geometry : geometries.values()) {
+			if (!excludedSet.contains(geometry.getName()))
+				geometry.render(tessellator);
+		}
 
 	}
 
@@ -72,25 +72,26 @@ public class Model implements IModelAnimationCustom {
 	@Override
 	public void renderAnimationOnly(double time, String... geometriesNames) {
 		Tessellator tessellator = Tessellator.instance;
-		for (Geometry geom : geometries.values()) {
-			geom.renderAnimation(tessellator, time);
+		for (String geometryName : geometriesNames) {
+			geometries.get(geometryName).renderAnimation(tessellator, time);
 		}
 	}
 
 	@Override
 	public void renderAnimationPart(double time, String partName) {
 		Tessellator tessellator = Tessellator.instance;
-		for (Geometry geom : geometries.values()) {
-			geom.renderAnimation(tessellator, time);
-		}
+		geometries.get(partName).renderAnimation(tessellator, time);
 	}
 
 	@Override
 	public void renderAnimationAllExcept(double time,
 			String... excludedGroupNames) {
+		Set<String> excludedSet = new HashSet<String>(
+				Arrays.asList(excludedGroupNames));
 		Tessellator tessellator = Tessellator.instance;
-		for (Geometry geom : geometries.values()) {
-			geom.renderAnimation(tessellator, time);
+		for (Geometry geometry : geometries.values()) {
+			if (!excludedSet.contains(geometry.getName()))
+				geometry.renderAnimation(tessellator, time);
 		}
 	}
 

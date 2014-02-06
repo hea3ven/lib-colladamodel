@@ -182,30 +182,30 @@ public class ColladaModelLoader implements IModelCustomLoader {
 						|| child.getNodeName() == "polygons"
 						|| child.getNodeName() == "triangles") {
 					ColladaSource vertexSrc = null;
-					Integer vertexOffset = null;
+//					Integer vertexOffset = null;
 					ColladaSource normalSrc = null;
-					Integer normalOffset = null;
+//					Integer normalOffset = null;
 					ColladaSource texcoordSrc = null;
-					Integer texcoordOffset = null;
+//					Integer texcoordOffset = null;
 
 					for (Element inputNode : GetXPathElementList(child, "input")) {
 						if (inputNode.getAttribute("semantic").equals("VERTEX")) {
 							vertexSrc = sources.get(parseURL(inputNode
 									.getAttribute("source")));
-							vertexOffset = Integer.parseInt(inputNode
-									.getAttribute("offset"));
+//							vertexOffset = Integer.parseInt(inputNode
+//									.getAttribute("offset"));
 						} else if (inputNode.getAttribute("semantic").equals(
 								"NORMAL")) {
 							normalSrc = sources.get(parseURL(inputNode
 									.getAttribute("source")));
-							normalOffset = Integer.parseInt(inputNode
-									.getAttribute("offset"));
+//							normalOffset = Integer.parseInt(inputNode
+//									.getAttribute("offset"));
 						} else if (inputNode.getAttribute("semantic").equals(
 								"TEXCOORD")) {
 							texcoordSrc = sources.get(parseURL(inputNode
 									.getAttribute("source")));
-							texcoordOffset = Integer.parseInt(inputNode
-									.getAttribute("offset"));
+							// texcoordOffset = Integer.parseInt(inputNode
+							// .getAttribute("offset"));
 						}
 					}
 
