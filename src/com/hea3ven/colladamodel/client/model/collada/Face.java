@@ -58,17 +58,6 @@ public class Face {
 	}
 
 	private Vec3 calculateFaceNormal() {
-		// Vec3 v1 = Vec3.createVectorHelper(vertex[1].xCoord -
-		// vertex[0].xCoord,
-		// vertex[1].yCoord - vertex[0].yCoord,
-		// vertex[1].zCoord - vertex[0].zCoord);
-		// Vec3 v2 = Vec3.createVectorHelper(vertex[2].xCoord -
-		// vertex[0].xCoord,
-		// vertex[2].yCoord - vertex[0].yCoord,
-		// vertex[2].zCoord - vertex[0].zCoord);
-		// Vec3 normalVector = null;
-		//
-		// return v1.crossProduct(v2).normalize();
 		double sumX = 0;
 		double sumY = 0;
 		double sumZ = 0;

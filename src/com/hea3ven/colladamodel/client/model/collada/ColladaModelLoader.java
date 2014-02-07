@@ -218,7 +218,6 @@ public class ColladaModelLoader implements IModelCustomLoader {
 							throw new ModelFormatException(
 									"Wrong number of data elements");
 
-						int p = 0;
 						for (int q = 0; q < count; q++) {
 							Vec3[] vertex = new Vec3[3];
 							Vec3[] normal = new Vec3[3];
@@ -234,7 +233,6 @@ public class ColladaModelLoader implements IModelCustomLoader {
 												asset.zAxis));
 								texCoords[r] = texcoordSrc.getVec2(refs[q * 9
 										+ r * 3 + 2], "S", "T");
-								p++;
 							}
 							Face poly = new Face();
 							poly.setVertex(vertex, normal, texCoords);
@@ -403,7 +401,6 @@ public class ColladaModelLoader implements IModelCustomLoader {
 			Element nodeNode) {
 		String nodeId = nodeNode.getAttribute("id");
 
-		HashMap<String, ColladaSource> sources = new HashMap<String, ColladaSource>();
 		List<Transform> transforms = new LinkedList<Transform>();
 		Geometry geom = null;
 
@@ -543,7 +540,7 @@ public class ColladaModelLoader implements IModelCustomLoader {
 				int frame = (int) Math
 						.floor(inputSource.getDouble("TIME", i) * 20);
 				KeyFrame keyFrame = new KeyFrame(frame, outputSource.getDouble(
-						0, i));
+						0, i), new LinearInterpolation());
 				animation.addKeyFrame(keyFrame);
 			}
 			asset.addAnimation(target, animation);

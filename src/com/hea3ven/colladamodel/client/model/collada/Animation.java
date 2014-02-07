@@ -29,14 +29,10 @@ public class Animation {
 		if (prevFrame == nextFrame)
 			return nextFrame.getValue();
 
-		int frameGap = nextFrame.getFrame() - prevFrame.getFrame();
-		return prevFrame.getValue()
-				+ (nextFrame.getValue() - prevFrame.getValue())
-				* ((double) (time - prevFrame.getFrame()) / frameGap);
+		return prevFrame.interpolate(time, nextFrame);
 	}
 
-    public double getAnimationLength()
-    {
-        return frames.get(frames.size()-1).getFrame();
-    }
+	public double getAnimationLength() {
+		return frames.get(frames.size() - 1).getFrame();
+	}
 }
