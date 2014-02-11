@@ -9,7 +9,7 @@ public abstract class Transform {
 
 	public abstract void applyAnimation(double frame);
 
-	public abstract void addAnimation(String paramName, Animation anim);
+	public abstract void setAnimation(String paramName, Animation anim);
 
     public abstract double getAnimationLength();
 }

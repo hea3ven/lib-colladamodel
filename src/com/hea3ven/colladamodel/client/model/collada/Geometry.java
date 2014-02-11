@@ -1,5 +1,6 @@
 package com.hea3ven.colladamodel.client.model.collada;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,11 +13,13 @@ public class Geometry {
 	private String name;
 	private List<Transform> transforms;
 	private List<Face> faces;
+	private HashMap<String, Transform> transformsById;
 
 	public Geometry() {
 		this.name = null;
 		this.transforms = new LinkedList<Transform>();
 		this.faces = new LinkedList<Face>();
+		this.transformsById = new HashMap<String, Transform>();
 	}
 
 	public String getName() {
@@ -27,8 +30,13 @@ public class Geometry {
 		this.name = name;
 	}
 
-	public void addTransform(Transform transform) {
+	public void addTransform(String id, Transform transform) {
 		this.transforms.add(transform);
+		this.transformsById.put(id, transform);
+	}
+
+	public Transform getTransform(String transId) {
+		return transformsById.get(transId);
 	}
 
 	public void addFace(Face face) {

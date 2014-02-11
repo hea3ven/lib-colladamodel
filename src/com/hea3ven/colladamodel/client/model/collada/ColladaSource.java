@@ -89,8 +89,8 @@ public class ColladaSource {
 	public Vec3 getVec3(Integer index, String param1, String param2,
 			String param3) {
 		if (getStride() == 3)
-			return Vec3.createVectorHelper(getDouble(param3, index),
-					getDouble(param2, index), getDouble(param1, index));
+			return Vec3.createVectorHelper(getDouble(param1, index),
+					getDouble(param2, index), getDouble(param3, index));
 		else
 			return null;
 	}

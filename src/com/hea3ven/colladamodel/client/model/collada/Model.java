@@ -26,6 +26,10 @@ public class Model implements IModelAnimationCustom {
 		geometries.put(geom.getName(), geom);
 	}
 
+	public Geometry getGeometry(String geomId) {
+		return geometries.get(geomId);
+	}
+
 	@Override
 	public void renderAll() {
 		Tessellator tessellator = Tessellator.instance;
@@ -109,4 +113,5 @@ public class Model implements IModelAnimationCustom {
 				animationLength = geom.getAnimationLength();
 		}
 	}
+
 }

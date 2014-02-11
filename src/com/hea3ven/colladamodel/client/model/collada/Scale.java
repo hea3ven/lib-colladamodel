@@ -1,8 +1,5 @@
 package com.hea3ven.colladamodel.client.model.collada;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import net.minecraft.util.Vec3;
 
 import org.lwjgl.opengl.GL11;
@@ -10,16 +7,16 @@ import org.lwjgl.opengl.GL11;
 public class Scale extends Transform {
 
 	private Vec3 vec;
-	private List<Animation> animationsX;
-	private List<Animation> animationsY;
-	private List<Animation> animationsZ;
+	private Animation animationX;
+	private Animation animationY;
+	private Animation animationZ;
 
 	public Scale(Vec3 vec) {
 		this.vec = vec;
 
-		this.animationsX = new LinkedList<Animation>();
-		this.animationsY = new LinkedList<Animation>();
-		this.animationsZ = new LinkedList<Animation>();
+		this.animationX = null;
+		this.animationY = null;
+		this.animationZ = null;
 	}
 
 	public Vec3 getVec() {
@@ -27,13 +24,13 @@ public class Scale extends Transform {
 	}
 
 	@Override
-	public void addAnimation(String paramName, Animation anim) {
+	public void setAnimation(String paramName, Animation anim) {
 		if (paramName.equals("Z"))
-			animationsX.add(anim);
+			animationX = anim;
 		else if (paramName.equals("Y"))
-			animationsY.add(anim);
+			animationY = anim;
 		else if (paramName.equals("X"))
-			animationsZ.add(anim);
+			animationZ = anim;
 	}
 
 	public void apply() {
@@ -41,31 +38,24 @@ public class Scale extends Transform {
 	}
 
 	public void applyAnimation(double time) {
-		double x = vec.xCoord;
-		double y = vec.yCoord;
-		double z = vec.zCoord;
-		for (Animation animation : animationsX)
-			x = animation.getValue(time);
-		for (Animation animation : animationsY)
-			y = animation.getValue(time);
-		for (Animation animation : animationsZ)
-			z = animation.getValue(time);
-		GL11.glScaled(x, y, z);
+		GL11.glScaled(
+				(animationX == null) ? vec.xCoord : animationX.getValue(time),
+				(animationY == null) ? vec.yCoord : animationY.getValue(time),
+				(animationZ == null) ? vec.zCoord : animationZ.getValue(time));
 	}
 
-    @Override
-    public double getAnimationLength()
-    {
-        double animationLength = 0;
-        for (Animation animation : animationsX)
-            if(animation.getAnimationLength() > animationLength)
-                animationLength = animation.getAnimationLength();
-        for (Animation animation : animationsY)
-            if(animation.getAnimationLength() > animationLength)
-                animationLength = animation.getAnimationLength();
-        for (Animation animation : animationsZ)
-            if(animation.getAnimationLength() > animationLength)
-                animationLength = animation.getAnimationLength();
-       return animationLength;
-    }
+	@Override
+	public double getAnimationLength() {
+		double animationLength = 0;
+		if (animationX != null
+				&& animationX.getAnimationLength() > animationLength)
+			animationLength = animationX.getAnimationLength();
+		if (animationY != null
+				&& animationY.getAnimationLength() > animationLength)
+			animationLength = animationY.getAnimationLength();
+		if (animationZ != null
+				&& animationZ.getAnimationLength() > animationLength)
+			animationLength = animationZ.getAnimationLength();
+		return animationLength;
+	}
 }
