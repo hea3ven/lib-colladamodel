@@ -390,7 +390,7 @@ public class ColladaAsset {
 
 		if (data_array.getNodeName() == "float_array")
 			src.setData(float_data);
-		else if (data_array.getNodeName() == "name_array")
+		else if (data_array.getNodeName() == "Name_array")
 			src.setData(name_data);
 
 		Element accessorNode = GetXPathElement(srcElem,
@@ -433,8 +433,24 @@ public class ColladaAsset {
 			for (int i = 0; i < sources.get("INPUT").getCount(); i++) {
 				int frame = (int) Math.floor(sources.get("INPUT").getDouble(
 						"TIME", i) * 20);
+				String interpName = sources.get("INTERPOLATION")
+						.getString(0, i);
+				Interpolation interp = null;
+				if (interpName.equals("LINEAR")) {
+					interp = new LinearInterpolation();
+				} else if (interpName.equals("BEZIER")) {
+					if (i + 1 < sources.get("INPUT").getCount())
+						interp = new BezierInterpolation(sources.get(
+								"OUT_TANGENT").getDouble("Y", i), sources.get(
+								"IN_TANGENT").getDouble("Y", i + 1));
+					else
+						interp = new LinearInterpolation();
+				} else {
+					throw new ModelFormatException(String.format(
+							"Invalid interpolation method %s", interpName));
+				}
 				KeyFrame keyFrame = new KeyFrame(frame, sources.get("OUTPUT")
-						.getDouble(0, i), new LinearInterpolation());
+						.getDouble(0, i), interp);
 				animation.addKeyFrame(keyFrame);
 			}
 

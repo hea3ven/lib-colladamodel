@@ -102,4 +102,12 @@ public class ColladaSource {
 		else
 			return null;
 	}
+
+	public String getString(String param, Integer index) {
+		return getString(getParamOffset(param), index);
+	}
+
+	public String getString(Integer paramOffset, Integer index) {
+		return string_data[index * stride + paramOffset];
+	}
 }
