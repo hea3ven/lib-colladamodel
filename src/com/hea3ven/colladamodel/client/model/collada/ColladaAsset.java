@@ -1,5 +1,8 @@
 package com.hea3ven.colladamodel.client.model.collada;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.DoubleBuffer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -143,7 +146,8 @@ public class ColladaAsset {
 		Model model = new Model();
 		for (Element nodeElem : GetXPathElementList(sceneElem, "node")) {
 			Geometry geom = parseSceneNode(nodeElem);
-			model.addGeometry(geom);
+			if (geom != null)
+				model.addGeometry(geom);
 		}
 		for (Element animElem : GetXPathElementList("library_animations/animation")) {
 			parseAnimation(model, animElem);
@@ -152,9 +156,10 @@ public class ColladaAsset {
 	}
 
 	private Geometry parseSceneNode(Element nodeElem) {
-		String geomId = parseURL(GetXPathString(nodeElem,
-				"instance_geometry/@url"));
-		Geometry geom = getGeometry(geomId);
+		String geomURL = GetXPathString(nodeElem, "instance_geometry/@url");
+		if (geomURL == "")
+			return null;
+		Geometry geom = getGeometry(parseURL(geomURL));
 
 		String nodeId = nodeElem.getAttribute("id");
 		geom.setName(nodeId);
@@ -173,8 +178,8 @@ public class ColladaAsset {
 				transId = child.getAttribute("sid");
 			} else if (child.getTagName() == "matrix") {
 				// TODO:
-				// trans = parseScale(child);
-				// transId = child.getAttribute("sid");
+				trans = parseMatrix(child);
+				transId = child.getAttribute("sid");
 			}
 
 			if (trans != null)
@@ -206,10 +211,33 @@ public class ColladaAsset {
 	private Scale parseScale(Element scaleElem) {
 		double[] scaleData = splitDataDouble(scaleElem.getTextContent());
 		if (scaleData.length != 3)
-			throw new ModelFormatException("Invalid translate data");
+			throw new ModelFormatException("Invalid scale data");
 
 		return new Scale(toMinecraftCoords(scaleData[0], scaleData[1],
 				scaleData[2]));
+	}
+
+	private Matrix parseMatrix(Element matrixElem) {
+		double[] matrixData = splitDataDouble(matrixElem.getTextContent());
+		if (matrixData.length != 16)
+			throw new ModelFormatException("Invalid matrix data");
+
+		double tmp = matrixData[7];
+		matrixData[7] = matrixData[11];
+		matrixData[11] = -tmp;
+
+		ByteBuffer matrixBytes = ByteBuffer.allocateDirect(16 * 8);
+		matrixBytes.order(ByteOrder.nativeOrder());
+		matrixBytes.clear();
+		DoubleBuffer matrix = matrixBytes.asDoubleBuffer();
+		matrix.clear();
+		for (int j = 0; j < 4; j++) {
+			matrix.put(matrixData[j]);
+			matrix.put(matrixData[j + 4]);
+			matrix.put(matrixData[j + 8]);
+			matrix.put(matrixData[j + 12]);
+		}
+		return new Matrix(toMinecraftCoords(matrix));
 	}
 
 	public Geometry getGeometry(String id) {
@@ -507,5 +535,9 @@ public class ColladaAsset {
 			return Vec3.createVectorHelper(vec.yCoord, vec.zCoord, vec.xCoord);
 		else
 			return null;
+	}
+
+	public DoubleBuffer toMinecraftCoords(DoubleBuffer matrix) {
+		return matrix;
 	}
 }

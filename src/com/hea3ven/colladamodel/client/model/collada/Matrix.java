@@ -2,10 +2,12 @@ package com.hea3ven.colladamodel.client.model.collada;
 
 import java.nio.DoubleBuffer;
 
+import org.lwjgl.opengl.GL11;
+
 public class Matrix extends Transform {
 	private DoubleBuffer matrix;
 
-	public Matrix(String id, DoubleBuffer matrix) {
+	public Matrix(DoubleBuffer matrix) {
 		this.matrix = matrix;
 	}
 
@@ -19,8 +21,8 @@ public class Matrix extends Transform {
 
 	@Override
 	public void apply() {
-		// matrix.rewind();
-		// GL11.glLoadMatrix(matrix);
+		matrix.rewind();
+		GL11.glMultMatrix(matrix);
 	}
 
 	@Override
@@ -34,11 +36,10 @@ public class Matrix extends Transform {
 
 	}
 
-    @Override
-    public double getAnimationLength()
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
+	@Override
+	public double getAnimationLength() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
 }
