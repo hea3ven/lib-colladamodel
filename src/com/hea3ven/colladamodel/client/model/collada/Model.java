@@ -15,6 +15,7 @@ public class Model implements IModelAnimationCustom {
 
 	public Model() {
 		geometries = new HashMap<String, Geometry>();
+		animationLength = -1.0d;
 	}
 
 	@Override

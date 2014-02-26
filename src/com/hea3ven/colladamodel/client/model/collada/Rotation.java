@@ -46,7 +46,9 @@ public class Rotation extends Transform {
 
 	@Override
 	public double getAnimationLength() {
-		return animation.getAnimationLength();
+		if (animation != null)
+			return animation.getAnimationLength();
+		else
+			return 0.0d;
 	}
-
 }

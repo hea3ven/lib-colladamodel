@@ -460,7 +460,7 @@ public class ColladaAsset {
 			Animation animation = new Animation();
 			for (int i = 0; i < sources.get("INPUT").getCount(); i++) {
 				int frame = (int) Math.floor(sources.get("INPUT").getDouble(
-						"TIME", i) * 20);
+						"TIME", i));
 				String interpName = sources.get("INTERPOLATION")
 						.getString(0, i);
 				Interpolation interp = null;
