@@ -19,12 +19,12 @@ apply plugin: 'forge'
 
 sourceCompatibility = 1.6
 
-version = "1.0"
+version = "1.0a1"
 group = "com.hea3ven" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "lib-colladamodel"
 
 minecraft {
-    version = "1.7.2-10.12.0.1022"
+    version = "1.7.2-10.12.0.1024"
 }
 
 sourceSets.main{
@@ -33,6 +33,30 @@ sourceSets.main{
     }
     resources{
         srcDirs 'resources' //set the resources folder as the /resources subfolder
+    }
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    appendix = 'src'
+}
+
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    appendix = 'deobf'
+}
+
+artifacts {
+    //archives sourceJar
+    archives deobfJar
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "file://localhost/tmp/mvn/")
+            addFilter('deobf') { artifact, file -> artifact.name == 'lib-colladamodel-deobf' }
+        }
     }
 }
 
