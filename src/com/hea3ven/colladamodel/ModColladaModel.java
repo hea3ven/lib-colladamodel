@@ -30,7 +30,7 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
-@Mod(modid = "colladamodel")
+@Mod(modid = "colladamodel", version = "1.0a1", dependencies = "required-after:Forge@[10.12.0.1024,)")
 public class ModColladaModel {
 
 	@Instance("colladamodel")
