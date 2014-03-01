@@ -4,7 +4,7 @@ A minecraft library mod that adds the ability to load models from COLLADA files.
 
 ## For Users
 
-Download latest version: (lib-colladamodel v1.0a1)[https://github.com/hea3ven/lib-colladamodel/releases/download/1.0a1/lib-colladamodel-1.0a1.jar]
+Download latest version: [lib-colladamodel v1.0a1](https://github.com/hea3ven/lib-colladamodel/releases/download/1.0a1/lib-colladamodel-1.0a1.jar)
 
 ## For Developers
 
