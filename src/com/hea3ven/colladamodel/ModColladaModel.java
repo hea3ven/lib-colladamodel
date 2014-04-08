@@ -21,14 +21,18 @@
 
 package com.hea3ven.colladamodel;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 
+import com.hea3ven.colladamodel.client.model.ModelManager;
 import com.hea3ven.colladamodel.client.model.collada.ColladaModelLoader;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.relauncher.Side;
 
 @Mod(modid = "colladamodel", version = "1.0a1", dependencies = "required-after:Forge@[10.12.0.1024,)")
 public class ModColladaModel {
@@ -36,9 +40,21 @@ public class ModColladaModel {
 	@Instance("colladamodel")
 	public static ModColladaModel instance;
 
+	private static ModelManager modelManager;
+
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		AdvancedModelLoader.registerModelHandler(new ColladaModelLoader());
+		if (event.getSide() == Side.CLIENT) {
+			modelManager = new ModelManager();
+
+			((IReloadableResourceManager) Minecraft.getMinecraft()
+					.getResourceManager()).registerReloadListener(modelManager);
+		}
+	}
+
+	public static ModelManager getModelManager() {
+		return modelManager;
 	}
 
 }
