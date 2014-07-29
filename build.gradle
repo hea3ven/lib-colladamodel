@@ -11,7 +11,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.1-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
     }
 }
 
@@ -24,16 +24,8 @@ group = "com.hea3ven"
 archivesBaseName = "lib-colladamodel"
 
 minecraft {
-    version = "1.7.2-10.12.0.1024"
-}
-
-sourceSets.main {
-    java {
-        srcDirs 'src'
-    }
-    resources {
-        srcDirs 'resources'
-    }
+    version = "1.7.10-10.13.0.1160"
+    assetDir = "eclipse/assets"
 }
 
 task sourceJar(type: Jar) {

@@ -71,6 +71,10 @@ public class ColladaAsset {
 
 	}
 
+	public ColladaAsset()
+	{
+	}
+
 	private String GetXPathString(String path) {
 		return GetXPathString(root, path);
 	}
@@ -396,8 +400,10 @@ public class ColladaAsset {
 
 	}
 
-	private ColladaSource parseSource(Element srcElem) {
+	public ColladaSource parseSource(Element srcElem) {
 		ColladaSource src = new ColladaSource();
+		
+		src.setId(srcElem.getAttribute("id"));
 
 		Element data_array = GetXPathElement(srcElem, "float_array");
 		if (data_array == null) {
