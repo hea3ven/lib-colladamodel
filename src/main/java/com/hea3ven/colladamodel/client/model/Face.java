@@ -19,7 +19,7 @@
  *
  */
 
-package com.hea3ven.colladamodel.client.model.collada;
+package com.hea3ven.colladamodel.client.model;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Vec3;

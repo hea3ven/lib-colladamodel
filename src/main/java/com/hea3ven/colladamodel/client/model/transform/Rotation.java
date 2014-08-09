@@ -19,8 +19,36 @@
  *
  */
 
-package com.hea3ven.colladamodel.client.model.collada;
+package com.hea3ven.colladamodel.client.model.transform;
 
-public interface Interpolation {
-	double interpolate(double time, KeyFrame frame, KeyFrame nextFrame);
+import net.minecraft.util.Vec3;
+
+import org.lwjgl.opengl.GL11;
+
+public class Rotation extends Transform {
+
+	private Vec3 vec;
+	private double angle;
+
+	public Rotation(String name, Vec3 vec, double angle) {
+		super(name);
+		this.vec = vec;
+		this.angle = angle;
+	}
+
+	public Vec3 getVec() {
+		return vec;
+	}
+
+	public void apply() {
+		GL11.glRotated(angle, vec.xCoord, vec.yCoord, vec.zCoord);
+	}
+
+	public double getAngle() {
+		return angle;
+	}
+
+	public void setAngle(double angle) {
+		this.angle = angle;
+	}
 }

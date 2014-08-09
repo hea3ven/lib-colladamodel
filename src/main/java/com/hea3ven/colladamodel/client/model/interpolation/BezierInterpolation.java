@@ -19,7 +19,9 @@
  *
  */
 
-package com.hea3ven.colladamodel.client.model.collada;
+package com.hea3ven.colladamodel.client.model.interpolation;
+
+import com.hea3ven.colladamodel.client.model.animation.KeyFrame;
 
 public class BezierInterpolation implements Interpolation {
 	public static double APPROXIMATION_EPSILON = 1.0e-09;

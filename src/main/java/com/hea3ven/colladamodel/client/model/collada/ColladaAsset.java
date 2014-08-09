@@ -27,6 +27,7 @@ import java.nio.DoubleBuffer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.xml.soap.Node;
 import javax.xml.xpath.XPath;
@@ -40,6 +41,22 @@ import net.minecraftforge.client.model.ModelFormatException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import com.hea3ven.colladamodel.client.model.Face;
+import com.hea3ven.colladamodel.client.model.Geometry;
+import com.hea3ven.colladamodel.client.model.Model;
+import com.hea3ven.colladamodel.client.model.animation.Animation;
+import com.hea3ven.colladamodel.client.model.animation.AnimationSampler;
+import com.hea3ven.colladamodel.client.model.animation.IAnimable;
+import com.hea3ven.colladamodel.client.model.animation.KeyFrame;
+import com.hea3ven.colladamodel.client.model.interpolation.BezierInterpolation;
+import com.hea3ven.colladamodel.client.model.interpolation.Interpolation;
+import com.hea3ven.colladamodel.client.model.interpolation.LinearInterpolation;
+import com.hea3ven.colladamodel.client.model.transform.Matrix;
+import com.hea3ven.colladamodel.client.model.transform.Rotation;
+import com.hea3ven.colladamodel.client.model.transform.Scale;
+import com.hea3ven.colladamodel.client.model.transform.Transform;
+import com.hea3ven.colladamodel.client.model.transform.Translation;
 
 public class ColladaAsset {
 
@@ -71,8 +88,7 @@ public class ColladaAsset {
 
 	}
 
-	public ColladaAsset()
-	{
+	public ColladaAsset() {
 	}
 
 	private String GetXPathString(String path) {
@@ -174,9 +190,6 @@ public class ColladaAsset {
 			if (geom != null)
 				model.addGeometry(geom);
 		}
-		for (Element animElem : GetXPathElementList("library_animations/animation")) {
-			parseAnimation(model, animElem);
-		}
 		return model;
 	}
 
@@ -208,7 +221,7 @@ public class ColladaAsset {
 			}
 
 			if (trans != null)
-				geom.addTransform(transId, trans);
+				geom.addTransform(trans);
 		}
 
 		return geom;
@@ -220,8 +233,8 @@ public class ColladaAsset {
 		if (transData.length != 3)
 			throw new ModelFormatException("Invalid translate data");
 
-		return new Translation(toMinecraftCoords(transData[0], transData[1],
-				transData[2]));
+		return new Translation(transElem.getAttribute("id"), toMinecraftCoords(
+				transData[0], transData[1], transData[2]));
 	}
 
 	private Rotation parseRotation(Element rotElem) {
@@ -229,8 +242,8 @@ public class ColladaAsset {
 		if (rotData.length != 4)
 			throw new ModelFormatException("Invalid rotate data");
 
-		return new Rotation(toMinecraftCoords(rotData[0], rotData[1],
-				rotData[2]), rotData[3]);
+		return new Rotation(rotElem.getAttribute("id"), toMinecraftCoords(
+				rotData[0], rotData[1], rotData[2]), rotData[3]);
 	}
 
 	private Scale parseScale(Element scaleElem) {
@@ -238,8 +251,8 @@ public class ColladaAsset {
 		if (scaleData.length != 3)
 			throw new ModelFormatException("Invalid scale data");
 
-		return new Scale(toMinecraftCoords(scaleData[0], scaleData[1],
-				scaleData[2]));
+		return new Scale(scaleElem.getAttribute("id"), toMinecraftCoords(
+				scaleData[0], scaleData[1], scaleData[2]));
 	}
 
 	private Matrix parseMatrix(Element matrixElem) {
@@ -262,7 +275,8 @@ public class ColladaAsset {
 			matrix.put(matrixData[j + 8]);
 			matrix.put(matrixData[j + 12]);
 		}
-		return new Matrix(toMinecraftCoords(matrix));
+		return new Matrix(matrixElem.getAttribute("id"),
+				toMinecraftCoords(matrix));
 	}
 
 	public Geometry getGeometry(String id) {
@@ -401,9 +415,8 @@ public class ColladaAsset {
 	}
 
 	public ColladaSource parseSource(Element srcElem) {
-		ColladaSource src = new ColladaSource();
-		
-		src.setId(srcElem.getAttribute("id"));
+
+		String id = srcElem.getAttribute("id");
 
 		Element data_array = GetXPathElement(srcElem, "float_array");
 		if (data_array == null) {
@@ -443,39 +456,54 @@ public class ColladaAsset {
 		if (i < data_count - 1)
 			throw new ModelFormatException("Not enough values in the data");
 
-		if (data_array.getNodeName() == "float_array")
-			src.setData(float_data);
-		else if (data_array.getNodeName() == "Name_array")
-			src.setData(name_data);
-
 		Element accessorNode = GetXPathElement(srcElem,
 				"technique_common/accessor");
+		int count = 0;
+		int stride = 1;
 		try {
-			src.setCount(Integer.parseInt(accessorNode.getAttribute("count")));
+			count = Integer.parseInt(accessorNode.getAttribute("count"));
 			if (accessorNode.getAttribute("stride") != "")
-				src.setStride(Integer.parseInt(accessorNode
-						.getAttribute("stride")));
-			else
-				src.setStride(1);
+				stride = Integer.parseInt(accessorNode.getAttribute("stride"));
 		} catch (NumberFormatException ex) {
 			throw new ModelFormatException(
 					"Could not parse the count attribute of the <float_array>",
 					ex);
 		}
 
+		ColladaSource source = null;
+
 		Collection<Element> paramElems = GetXPathElementList(accessorNode,
 				"param");
-		String[] params = new String[paramElems.size()];
-		i = 0;
-		for (Element paramElem : paramElems) {
-			params[i++] = paramElem.getAttribute("name");
-		}
+		if (stride == 1) {
+			Element paramElem = paramElems.iterator().next();
+			if (paramElem.getAttribute("type").equals("float4x4")) {
+				float[][] float4x4_data = new float[count][16];
+				for (int j = 0; j < count; j++) {
+					for (int k = 0; k < 16; k++) {
+						float4x4_data[j][k] = float_data[j * 16 + k];
+					}
 
-		src.setParams(params);
-		return src;
+				}
+				source = new ColladaSource(id, paramElem.getAttribute("name"),
+						float4x4_data);
+			} else if (paramElem.getAttribute("type").equals("name")) {
+				source = new ColladaSource(id, paramElem.getAttribute("name"),
+						name_data);
+			}
+		}
+		if (source == null) {
+			String[] params = new String[paramElems.size()];
+			i = 0;
+			for (Element paramElem : paramElems) {
+				params[i++] = paramElem.getAttribute("name");
+			}
+			source = new ColladaSource(id, params, stride, float_data);
+		}
+		return source;
 	}
 
-	private void parseAnimation(Model model, Element animElem) {
+	private Animation parseAnimation(Element animElem) {
+		List<IAnimable> children = new LinkedList<IAnimable>();
 		Element channelNode = GetXPathElement(animElem, "channel");
 		if (channelNode != null) {
 			String samplerId = parseURL(channelNode.getAttribute("source"));
@@ -484,7 +512,8 @@ public class ColladaAsset {
 			HashMap<String, ColladaSource> sources = parseAnimationInputSources(
 					animElem, samplerElem);
 
-			Animation animation = new Animation();
+			ColladaSource outputSource = sources.get("OUTPUT");
+			List<KeyFrame> frames = new LinkedList<KeyFrame>();
 			for (int i = 0; i < sources.get("INPUT").getCount(); i++) {
 				int frame = (int) Math.floor(sources.get("INPUT").getDouble(
 						"TIME", i));
@@ -492,6 +521,7 @@ public class ColladaAsset {
 						.getString(0, i);
 				Interpolation interp = null;
 				if (interpName.equals("LINEAR")) {
+
 					interp = new LinearInterpolation();
 				} else if (interpName.equals("BEZIER")) {
 					if (i + 1 < sources.get("INPUT").getCount())
@@ -504,25 +534,32 @@ public class ColladaAsset {
 					throw new ModelFormatException(String.format(
 							"Invalid interpolation method %s", interpName));
 				}
-				KeyFrame keyFrame = new KeyFrame(frame, sources.get("OUTPUT")
-						.getDouble(0, i), interp);
-				animation.addKeyFrame(keyFrame);
+				if (outputSource.getType() == ColladaSourceType.FLOAT) {
+					KeyFrame keyFrame = new KeyFrame(frame,
+							outputSource.getDouble(0, i), interp);
+					frames.add(keyFrame);
+				} else if (outputSource.getType() == ColladaSourceType.FLOAT4x4) {
+					KeyFrame keyFrame = new KeyFrame(frame,
+							outputSource.getFloat4x4(0, i), interp);
+					frames.add(keyFrame);
+				}
 			}
 
 			String[] targetParts = channelNode.getAttribute("target").split(
 					"[/.]");
-			Transform trans = model.getGeometry(targetParts[0]).getTransform(
-					targetParts[1]);
-			if (targetParts.length == 3)
-				trans.setAnimation(toMinecraftParam(targetParts[2]), animation);
-			else
-				trans.setAnimation(null, animation);
+			AnimationSampler sampler = new AnimationSampler(targetParts[0],
+					targetParts[1], (targetParts.length == 3) ? targetParts[2]
+							: null, frames);
+			children.add(sampler);
 		}
 		for (Element subAnimationElem : GetXPathElementList(animElem,
 				"animation")) {
-			parseAnimation(model, subAnimationElem);
+			children.add(parseAnimation(subAnimationElem));
 		}
 
+		Animation animation = new Animation(animElem.getAttribute("id"),
+				children);
+		return animation;
 	}
 
 	private HashMap<String, ColladaSource> parseAnimationInputSources(

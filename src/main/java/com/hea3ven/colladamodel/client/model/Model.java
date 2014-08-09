@@ -19,7 +19,7 @@
  *
  */
 
-package com.hea3ven.colladamodel.client.model.collada;
+package com.hea3ven.colladamodel.client.model;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,15 +28,14 @@ import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraftforge.client.model.IModelCustom;
 
-public class Model implements IModelAnimationCustom {
+public class Model implements IModelCustom {
 
 	private Map<String, Geometry> geometries;
-	private double animationLength;
 
 	public Model() {
 		geometries = new HashMap<String, Geometry>();
-		animationLength = -1.0d;
 	}
 
 	@Override
@@ -87,7 +86,6 @@ public class Model implements IModelAnimationCustom {
 
 	}
 
-	@Override
 	public void renderAnimationAll(double time) {
 		Tessellator tessellator = Tessellator.instance;
 		for (Geometry geom : geometries.values()) {
@@ -95,7 +93,6 @@ public class Model implements IModelAnimationCustom {
 		}
 	}
 
-	@Override
 	public void renderAnimationOnly(double time, String... geometriesNames) {
 		Tessellator tessellator = Tessellator.instance;
 		for (String geometryName : geometriesNames) {
@@ -103,13 +100,11 @@ public class Model implements IModelAnimationCustom {
 		}
 	}
 
-	@Override
 	public void renderAnimationPart(double time, String partName) {
 		Tessellator tessellator = Tessellator.instance;
 		geometries.get(partName).renderAnimation(tessellator, time);
 	}
 
-	@Override
 	public void renderAnimationAllExcept(double time,
 			String... excludedGroupNames) {
 		Set<String> excludedSet = new HashSet<String>(
@@ -120,20 +115,4 @@ public class Model implements IModelAnimationCustom {
 				geometry.renderAnimation(tessellator, time);
 		}
 	}
-
-	@Override
-	public double getAnimationLength() {
-		if (animationLength == -1)
-			calculateAnimationLength();
-		return animationLength;
-	}
-
-	private void calculateAnimationLength() {
-		animationLength = 0;
-		for (Geometry geom : geometries.values()) {
-			if (geom.getAnimationLength() > animationLength)
-				animationLength = geom.getAnimationLength();
-		}
-	}
-
 }

@@ -19,28 +19,29 @@
  *
  */
 
-package com.hea3ven.colladamodel.client.model.collada;
+package com.hea3ven.colladamodel.client.model;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.client.renderer.Tessellator;
 
 import org.lwjgl.opengl.GL11;
 
+import com.hea3ven.colladamodel.client.model.transform.Transform;
+
 public class Geometry {
 
 	private String name;
-	private List<Transform> transforms;
+	private Map<String, Transform> transforms;
 	private List<Face> faces;
-	private HashMap<String, Transform> transformsById;
 
 	public Geometry() {
 		this.name = null;
-		this.transforms = new LinkedList<Transform>();
+		this.transforms = new LinkedHashMap<String, Transform>();
 		this.faces = new LinkedList<Face>();
-		this.transformsById = new HashMap<String, Transform>();
 	}
 
 	public String getName() {
@@ -51,13 +52,12 @@ public class Geometry {
 		this.name = name;
 	}
 
-	public void addTransform(String id, Transform transform) {
-		this.transforms.add(transform);
-		this.transformsById.put(id, transform);
+	public void addTransform(Transform transform) {
+		this.transforms.put(transform.getName(), transform);
 	}
 
-	public Transform getTransform(String transId) {
-		return transformsById.get(transId);
+	public Transform getTransform(String name) {
+		return transforms.get(name);
 	}
 
 	public void addFace(Face face) {
@@ -67,7 +67,7 @@ public class Geometry {
 	public void render(Tessellator tessellator) {
 		GL11.glPushMatrix();
 
-		for (Transform trans : transforms) {
+		for (Transform trans : transforms.values()) {
 			trans.apply();
 		}
 
@@ -79,28 +79,29 @@ public class Geometry {
 	}
 
 	public void renderAnimation(Tessellator tessellator, double frame) {
-		GL11.glPushMatrix();
-
-		for (Transform trans : transforms) {
-			trans.applyAnimation(frame);
-		}
-
-		for (Face face : faces) {
-			face.render(tessellator);
-		}
-
-		GL11.glPopMatrix();
+		// TODO: Refactor
+//		GL11.glPushMatrix();
+//
+//		for (Transform trans : transforms) {
+//			trans.applyAnimation(frame);
+//		}
+//
+//		for (Face face : faces) {
+//			face.render(tessellator);
+//		}
+//
+//		GL11.glPopMatrix();
 	}
 
-    public double getAnimationLength()
-    {
-        double animationLength = 0;
-        for (Transform trans : transforms)
-        {
-            if(trans.getAnimationLength() > animationLength)
-                animationLength = trans.getAnimationLength();
-        }
-        return animationLength;
-    }
+	public double getAnimationLength() {
+		// TODO: Refactor
+		return 0;
+//		double animationLength = 0;
+//		for (Transform trans : transforms) {
+//			if (trans.getAnimationLength() > animationLength)
+//				animationLength = trans.getAnimationLength();
+//		}
+//		return animationLength;
+	}
 
 }

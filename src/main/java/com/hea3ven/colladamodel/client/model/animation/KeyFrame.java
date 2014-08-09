@@ -19,16 +19,26 @@
  *
  */
 
-package com.hea3ven.colladamodel.client.model.collada;
+package com.hea3ven.colladamodel.client.model.animation;
+
+import com.hea3ven.colladamodel.client.model.interpolation.Interpolation;
 
 public class KeyFrame {
 	private double frame;
 	private double value;
+	private float[] valueMatrix;
 	private Interpolation interpolation;
 
 	public KeyFrame(double frame, double value, Interpolation interpolation) {
 		this.frame = frame;
 		this.value = value;
+		this.valueMatrix = null;
+		this.interpolation = interpolation;
+	}
+
+	public KeyFrame(double frame, float[] value, Interpolation interpolation) {
+		this.frame = frame;
+		this.valueMatrix = value;
 		this.interpolation = interpolation;
 	}
 

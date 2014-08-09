@@ -19,21 +19,23 @@
  *
  */
 
-package com.hea3ven.colladamodel.client.model.collada;
+package com.hea3ven.colladamodel.client.model.animation;
 
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
-public class Animation {
+public class AnimationSampler implements IAnimable{
+	private String geometryName;
+	private String transformName;
+	private String channelName;
 	private List<KeyFrame> frames;
 
-	public Animation() {
-		frames = new LinkedList<KeyFrame>();
-	}
-
-	public void addKeyFrame(KeyFrame keyFrame) {
-		frames.add(keyFrame);
+	public AnimationSampler(String geometryName, String transformName,
+			String channelName, List<KeyFrame> frames) {
+		this.geometryName = geometryName;
+		this.transformName = transformName;
+		this.channelName = channelName;
+		this.frames = frames;
 	}
 
 	public double getValue(double time) {

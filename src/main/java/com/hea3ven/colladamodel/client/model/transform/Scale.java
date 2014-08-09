@@ -19,15 +19,26 @@
  *
  */
 
-package com.hea3ven.colladamodel.client.model.collada;
+package com.hea3ven.colladamodel.client.model.transform;
 
-public class LinearInterpolation implements Interpolation {
+import net.minecraft.util.Vec3;
 
-	@Override
-	public double interpolate(double time, KeyFrame frame, KeyFrame nextFrame) {
-		double s = (time - frame.getFrame())
-				/ (nextFrame.getFrame() - frame.getFrame());
-		return frame.getValue() + (nextFrame.getValue() - frame.getValue()) * s;
+import org.lwjgl.opengl.GL11;
+
+public class Scale extends Transform {
+
+	private Vec3 vec;
+
+	public Scale(String name, Vec3 vec) {
+		super(name);
+		this.vec = vec;
 	}
 
+	public Vec3 getVec() {
+		return vec;
+	}
+
+	public void apply() {
+		GL11.glScaled(vec.xCoord, vec.yCoord, vec.zCoord);
+	}
 }

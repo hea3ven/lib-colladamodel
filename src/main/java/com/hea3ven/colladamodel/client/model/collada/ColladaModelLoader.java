@@ -39,6 +39,8 @@ import net.minecraftforge.client.model.ModelFormatException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import com.hea3ven.colladamodel.client.model.Model;
+
 public class ColladaModelLoader implements IModelCustomLoader {
 
 	@Override
@@ -73,18 +75,18 @@ public class ColladaModelLoader implements IModelCustomLoader {
 	}
 
 	// @Override
-	public IModelAnimationCustom loadAnimationInstance(ResourceLocation resource)
-			throws ModelFormatException {
-		IResource res;
-		try {
-			res = Minecraft.getMinecraft().getResourceManager()
-					.getResource(resource);
-		} catch (IOException e) {
-			throw new ModelFormatException("IO Exception reading model format",
-					e);
-		}
-		return LoadFromStream(res.getInputStream());
-	}
+//	public IModelAnimationCustom loadAnimationInstance(ResourceLocation resource)
+//			throws ModelFormatException {
+//		IResource res;
+//		try {
+//			res = Minecraft.getMinecraft().getResourceManager()
+//					.getResource(resource);
+//		} catch (IOException e) {
+//			throw new ModelFormatException("IO Exception reading model format",
+//					e);
+//		}
+//		return LoadFromStream(res.getInputStream());
+//	}
 
 	private Model LoadFromStream(InputStream stream) {
 		try {

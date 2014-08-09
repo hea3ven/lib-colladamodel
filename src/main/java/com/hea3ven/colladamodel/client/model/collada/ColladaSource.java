@@ -26,61 +26,58 @@ import net.minecraft.util.Vec3;
 public class ColladaSource {
 
 	private String id;
+	private ColladaSourceType type;
 	private float[] float_data;
+	private float[][] float4x4_data;
 	private String[] string_data;
 	private String[] params;
 	private int count;
 	private int stride;
 
-	public ColladaSource() {
+	public ColladaSource(String id, String[] params, int count, int stride) {
+		this.id = id;
+		this.params = params;
+		this.count = count;
+		this.stride = stride;
+	}
+
+	public ColladaSource(String id, String[] params, int stride,
+			float[] float_data) {
+		this(id, params, float_data.length / stride, stride);
+		this.float_data = float_data;
+		this.type = ColladaSourceType.FLOAT;
+	}
+
+	public ColladaSource(String id, String param, String[] string_data) {
+		this(id, new String[] { param }, string_data.length, 1);
+		this.string_data = string_data;
+		this.type = ColladaSourceType.NAME;
+	}
+
+	public ColladaSource(String id, String param, float[][] float4x4_data) {
+		this(id, new String[] { param }, float4x4_data.length, 1);
+		this.float4x4_data = float4x4_data;
+		this.type = ColladaSourceType.FLOAT4x4;
 	}
 
 	public String getId() {
 		return id;
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public float[] getFloatData() {
-		return float_data;
-	}
-
-	public void setData(float[] data) {
-		this.float_data = data;
-	}
-
-	public String[] getStringData() {
-		return string_data;
-	}
-
-	public void setData(String[] data) {
-		this.string_data = data;
-	}
-
 	public int getCount() {
-		return this.count;
+		return count;
 	}
-
-	public void setCount(int count) {
-		this.count = count;
+	
+	public ColladaSourceType getType() {
+		return type;
 	}
 
 	public int getStride() {
 		return stride;
 	}
 
-	public void setStride(int stride) {
-		this.stride = stride;
-	}
-
 	public String[] getParams() {
 		return params;
-	}
-
-	public void setParams(String[] params) {
-		this.params = params;
 	}
 
 	private int getParamOffset(String param) {
@@ -92,11 +89,11 @@ public class ColladaSource {
 	}
 
 	public float getFloat(String param, Integer index) {
-		return float_data[index * stride + getParamOffset(param)];
+		return getFloat(getParamOffset(param), index);
 	}
 
 	public float getDouble(String param, Integer index) {
-		return float_data[index * stride + getParamOffset(param)];
+		return getDouble(getParamOffset(param), index);
 	}
 
 	public float getFloat(Integer paramOffset, Integer index) {
@@ -127,5 +124,13 @@ public class ColladaSource {
 
 	public String getString(Integer paramOffset, Integer index) {
 		return string_data[index * stride + paramOffset];
+	}
+
+	public float[] getFloat4x4(String param, Integer index) {
+		return getFloat4x4(getParamOffset(param), index);
+	}
+
+	public float[] getFloat4x4(Integer paramOffset, Integer index) {
+		return float4x4_data[index * stride + paramOffset];
 	}
 }

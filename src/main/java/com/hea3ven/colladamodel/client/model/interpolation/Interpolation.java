@@ -19,18 +19,10 @@
  *
  */
 
-package com.hea3ven.colladamodel.client.model.collada;
+package com.hea3ven.colladamodel.client.model.interpolation;
 
-public abstract class Transform {
+import com.hea3ven.colladamodel.client.model.animation.KeyFrame;
 
-	public Transform() {
-	}
-
-	public abstract void apply();
-
-	public abstract void applyAnimation(double frame);
-
-	public abstract void setAnimation(String paramName, Animation anim);
-
-    public abstract double getAnimationLength();
+public interface Interpolation {
+	double interpolate(double time, KeyFrame frame, KeyFrame nextFrame);
 }
